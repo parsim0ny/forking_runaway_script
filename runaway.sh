@@ -28,7 +28,7 @@ check ()
     print "USER      PID     CPU    MEM    TTY    TIME        COMMAND" ; 
     printf "%-9s %-7s %-6s %-6s %-6s %-11s %s\n", $1, $2, $3, $4, $5, $6, $7 ; }}'
     ssh -o ConnectTimeout=5 $1@$2 "echo 'Uptime is: '; uptime"
-    echo $BASHPID >> pid.txt
+    #echo $BASHPID >> pid.txt
 }
 
 # Subshell monitoring is not working yet...
