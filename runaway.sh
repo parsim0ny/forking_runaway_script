@@ -25,12 +25,13 @@ check ()
     echo -e "${i}\n"
     ssh -o ConnectTimeout=5 $1@$2 ps -A -o user,pid,pcpu,pmem,tty,time,comm \
         | awk -v min_cpu=$3 -v min_mem=$4 '{ if($3 > min_cpu || $4 > min_mem){ 
-    print "USER\tPID\tCPU\tMEM\tTTY\tTIME\t\t\tCOMMAND"; 
-    print  $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\n"; }}'
+    print "USER      PID     CPU    MEM    TTY    TIME        COMMAND" ; 
+    printf "%-9s %-7s %-6s %-6s %-6s %-11s %s\n", $1, $2, $3, $4, $5, $6, $7 ; }}'
     ssh -o ConnectTimeout=5 $1@$2 "echo 'Uptime is: '; uptime"
     echo $BASHPID >> pid.txt
 }
 
+# Subshell monitoring is not working yet...
 #isRunning ()
 #{
 #    cat pid.txt | while read pid
@@ -57,7 +58,7 @@ sleep 10
 cat ./temp/*.txt > last_check.txt
 cat last_check.txt
 echo -e "\n\e[1;36m^ Host information"
-echo -e "\e[1;32mv Potential runaway processes\e[0;37m\n"
+echo -e "\e[1;32mv Potential \e[1;31mrunaway processes\e[0;37m\n"
 grep -A1 "USER" ./temp/*.txt > last_runaways.txt
 rm ./temp/*.txt
 if [ -s last_runaways.txt ] ; then
@@ -66,6 +67,6 @@ else
     echo -e "\e[1;31mNo processes to display.\e[0;37m"
 fi
 
-echo -e "\n\e[1;32mScroll up for host information.\e[0;37m\n"
+echo -e "\n\e[1;32mScroll up for \e[1;36mhost information\e[1;32m.\e[0;37m\n"
 
 kill $SSH_AGENT_PID
